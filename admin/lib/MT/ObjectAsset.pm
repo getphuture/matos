@@ -18,6 +18,7 @@ __PACKAGE__->install_properties(
             object_ds => 'string(50) not null',
             asset_id  => 'integer not null',
             embedded  => 'boolean',
+            order     => 'integer default 1'
         },
         indexes => {
             blog_obj =>

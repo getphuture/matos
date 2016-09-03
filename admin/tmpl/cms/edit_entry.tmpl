@@ -106,14 +106,14 @@
   </mtapp:statusmsg>
 </mt:if>
 <mt:if name="saved_prefs">
-  <mtapp:statusmsg    
+  <mtapp:statusmsg
      id="saved-prefs"
      class="success">
     <__trans phrase="Your customization preferences have been saved, and are visible in the form below.">
   </mtapp:statusmsg>
 </mt:if>
 <mt:if name="saved_comment">
-  <mtapp:statusmsg    
+  <mtapp:statusmsg
      id="saved-comment"
      class="success"
      rebuild="all"
@@ -122,14 +122,14 @@
   </mtapp:statusmsg>
 </mt:if>
 <mt:if name="saved_notify">
-  <mtapp:statusmsg    
+  <mtapp:statusmsg
      id="saved-notify"
      class="success">
     <__trans phrase="Your notification has been sent.">
   </mtapp:statusmsg>
 </mt:if>
 <mt:if name="recovered_object">
-  <mtapp:statusmsg    
+  <mtapp:statusmsg
      id="recovered-object"
      class="success">
   <mt:if name="object_type" eq="entry">
@@ -140,7 +140,7 @@
   </mtapp:statusmsg>
 </mt:if>
 <mt:if name="recovered_failed">
-  <mtapp:statusmsg    
+  <mtapp:statusmsg
      id="recovered-failed"
      class="error"
      can_close="0">
@@ -152,14 +152,14 @@
   </mtapp:statusmsg>
 </mt:if>
 <mt:if name="saved_deleted">
-  <mtapp:statusmsg    
+  <mtapp:statusmsg
      id="saved-deleted"
      class="success">
   <__trans phrase="You have successfully deleted the checked comment(s).">
   </mtapp:statusmsg>
 </mt:if>
 <mt:if name="saved_deleted_ping">
-  <mtapp:statusmsg    
+  <mtapp:statusmsg
      id="saved-deleted-ping"
      class="success">
     <__trans phrase="You have successfully deleted the checked TrackBack(s).">
@@ -281,7 +281,7 @@
                   label = [];
                   for ( var j = 0; j < cat.path.length; j++ ) {
                       var c = cache.getItem( "cat:"+cat.path[ j ] );
-                      if ( c ) 
+                      if ( c )
                           label.push( <mt:if name="object_type" ne="page">c.label<mt:else>c.basename</mt:if> );
                   }
                   label.push( <mt:if name="object_type" ne="page">cat.label<mt:else>cat.basename</mt:if> );
@@ -645,7 +645,7 @@
         </a>
         <a href="javascript:removeAssetFromList(<mt:var name="asset_id">)" title="<__trans phrase="Remove this asset.">" class="remove-asset icon-remove icon16 action-icon"><__trans phrase="Remove"></a>
       <mt:if name="asset_thumb">
-        <img id="list-image-<mt:var name="asset_id">" class="list-image" src="<mt:var name="asset_thumb">" style="display:none" /> 
+        <img id="list-image-<mt:var name="asset_id">" class="list-image" src="<mt:var name="asset_thumb">" style="display:none" />
       </mt:if>
       </li>
     </mt:loop>
@@ -656,6 +656,22 @@
     <input type="hidden" id="include_asset_ids" name="include_asset_ids" value="<mt:loop name="asset_loop"><mt:var name="asset_id"><mt:unless name="__last__">,</mt:unless></mt:loop>" />
   </mtapp:widget>
 </div>
+<script type="text/javascript">
+jQuery(function($) {
+    $('#asset-list').sortable({
+        update: function() {
+            $('#include_asset_ids').val(
+                $.map(
+                    $(this).sortable('toArray'),
+                    function(v) {
+                        return v.match(/(\d+)$/)[0]
+                    }
+                ).join()
+            );
+        }
+    });
+});
+</script>
 </mt:if>
 
 <mt:if name="object_type" eq="page">
@@ -718,7 +734,7 @@
       customizable_fields.push('feedback');
       customizable_fields.push('assets');
       var default_fields = [<mt:loop name="disp_prefs_default_fields" glue=",">'<mt:var name="name" escape="js">'</mt:loop>];
-      
+
       function saveEntryFieldOptions(options) {
           var defaults = {
               data: '',
@@ -745,7 +761,7 @@
               alert("Error: " + response.error);
               return;
           }
-      
+
           form.text.value = response.result.text;
           form.text_more.value = response.result.text_more;
           orig_text_format = cur_text_format = 'richtext';
@@ -778,7 +794,7 @@
           } else {
               jQuery('#formatting-help-link').addClass('disabled');
           }
-      
+
           if (cur_text_format == 'richtext') {
               // changing to plaintext editor
               jQuery('#editor-content').addClass('editor-plaintext');
@@ -830,7 +846,7 @@
           } else {
               jQuery('#formatting-help-link').addClass('disabled');
           }
-      
+
           if (option == 'richtext') {
               app.saveHTML(false);
               // changing to richtext editor
@@ -854,7 +870,7 @@
           }
       }
       </mt:unless>
-      
+
       function setDefaultFieldGroup() {
           var i, j, selected_fields, disable_fields, field_object;
 
@@ -872,10 +888,10 @@
           };
 
           sendEntryPrefs();
-      
+
           return false;
       }
-      
+
       var tag_delim = '<$mt:var name="auth_pref_tag_delim"$>';
       function setDirty () {
           log.warn('deprecated function setDirty(), call app.setDirty instead');
@@ -885,10 +901,10 @@
           log.warn('deprecated function clearDirty(), call app.clearDirty instead');
           app.clearDirty();
       }
-      
+
       // array of tag names
       var tagList;
-      
+
       function rebasename(title) {
           if (!orig_basename) {
               dir_title = dirify(title.value);
@@ -901,22 +917,22 @@
               }
           }
       }
-      
+
       RegExp.escape = (function() {
         var specials = [
           '/', '.', '*', '+', '?', '|',
           '(', ')', '[', ']', '{', '}', '\\'
         ];
-      
+
         sRE = new RegExp(
           '(\\' + specials.join('|\\') + ')', 'g'
         );
-        
+
         return function(text) {
           return text.replace(sRE, '\\$1');
         }
       })();
-      
+
       function tagSplit(str) {
           var delim = RegExp.escape(tag_delim);
           var delim_scan = new RegExp('^((([\'"])(.*?)\\3[^' + delim + ']*?|.*?)(' + delim + '\\s*|$))', '');
@@ -931,7 +947,7 @@
           }
           return tags;
       }
-      
+
       document.onkeyup = function(e) {
           if (!e) e = window.event;
           if (e.ctrlKey) {
@@ -964,7 +980,7 @@
               // return openManual('entries', 'entry_text_formatting');
           }
       }
-      
+
       function toggleFile() {
           var fld = getByID("basename");
           if (fld) {
@@ -980,7 +996,7 @@
               img.style.display = 'none';
           return false;
       }
-      
+
       var orig_basename;
       var tbTableSelect;
       var cmtTableSelect;
@@ -998,7 +1014,7 @@
           <mt:unless name="id">jQuery('#title').focus();</mt:unless>
           jQuery('#convert_breaks').change(changedTextFormat);
       }
-      
+
       var tagPos = 0;
       function initTags() {
           /* browsers don't want to cache the tags field, so we use a hidden input field to cache them */
@@ -1011,13 +1027,13 @@
               DOM.addEventListener( v, "change", function() { log('caching tags'); t.value = v.value; } );
           }
           if (!tagList || tagList.length == 0) return;
-      
+
           autoTag = new TC.TagComplete("tags", tagList);
           autoTag.delimiter = tag_delim;
       }
-      
+
       TC.attachLoadEvent( init );
-      
+
       function highlightSwitch(selection) {
           var descriptionObject = getByID('created_on-label');
           var highlightObject = getByID('created_on-date');
@@ -1032,7 +1048,7 @@
           }
           return false;
       }
-      
+
           Template.templates.autoSave = '<mt:section encode_js="1">
           [# if ( saving ) { #]
               [#= trans("Auto-saving..." ) #]
@@ -1044,7 +1060,7 @@
               <__trans phrase="Remove">
               <__trans phrase="Make primary">
           </mt:ignore>
-      
+
       function listPreviousPings () {
           window.open('<mt:var name="script_url">?__mode=pinged_urls&entry_id=<mt:var name="id" escape="html">&blog_id=<mt:var name="blog_id" escape="html">', 'urls', 'width=400,height=400,resizable=yes,scrollbars=yes');
       }
@@ -1349,4 +1365,3 @@
 
 </mt:setvarblock>
 <mt:include name="include/footer.tmpl" id="footer_include">
-  

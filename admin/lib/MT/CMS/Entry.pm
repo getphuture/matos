@@ -329,7 +329,18 @@ sub edit {
                 push @{$assets}, $asset_1;
             }
         }
-        $param->{asset_loop} = $assets;
+    	foreach my $s_asset (@$assets) {
+    		my $oa = MT::ObjectAsset->load({
+                object_ds =>'entry',
+                object_id => $app->param('id'),
+                asset_id  => $s_asset->{asset_id},
+            });
+    		$s_asset->{asset_order} = $oa->order || '1';
+    	}
+    	@$assets = sort {
+            $a->{asset_order} <=> $b->{asset_order}
+        } @$assets;
+    	$param->{asset_loop} = $assets;
     }
 
     ## Load categories and process into loop for category pull-down.
@@ -693,18 +704,18 @@ PERMCHECK: {
         $terms{blog_id} = $blog_ids;
     }
     else {
-        my @permissions = 
+        my @permissions =
             grep { $_->can_do($perm_action) }
-            $app->model('permission')->load( 
-                { 
-                    author_id => $app->user->id, 
+            $app->model('permission')->load(
+                {
+                    author_id => $app->user->id,
                     ( $blog_id ? ( blog_id => $blog_ids ) : () ),
                 } );
-        my @full_perms = 
-            grep { $_->can_do($perm_action_all) } 
+        my @full_perms =
+            grep { $_->can_do($perm_action_all) }
             @permissions;
-        my @self_perms = 
-            grep { not $_->can_do($perm_action_all) } 
+        my @self_perms =
+            grep { not $_->can_do($perm_action_all) }
             @permissions;
         if (0 == @self_perms) {
             $terms{blog_id} = [ map { $_->blog_id } @full_perms ];
@@ -714,12 +725,12 @@ PERMCHECK: {
             $terms{author_id} = $app->user->id;
         }
         else {
-            $terms_ref = 
-                [ 
-                    \%terms, 
+            $terms_ref =
+                [
+                    \%terms,
                     '-and',
                     [
-                        { 
+                        {
                             blog_id => [ map { $_->blog_id } @full_perms ],
                         },
                         '-or',
@@ -727,7 +738,7 @@ PERMCHECK: {
                             blog_id => [ map { $_->blog_id } @self_perms ],
                             author_id => $app->user->id,
                         }
-                    ],  
+                    ],
                 ];
         }
     }
@@ -1732,6 +1743,17 @@ sub save {
             );
             $obj_asset->remove;
         }
+    }
+    my @sorted_asset_ids = split(',', $app->param('include_asset_ids') || '');
+    my $pos = 1;
+    for my $sorted_asset_id (@sorted_asset_ids) {
+        my $oa = MT::ObjectAsset->load({
+            object_ds =>'entry',
+            object_id => $obj->id,
+            asset_id  => $sorted_asset_id,
+        });
+        $oa->order($pos++);
+        $oa->save;
     }
 
     my $message;

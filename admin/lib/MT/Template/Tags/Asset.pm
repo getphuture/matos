@@ -25,7 +25,7 @@ B<Attributes:>
 =item * type
 
 Specifies a particular type(s) of asset to select. This may be
-one of image, audio, video, or file(a generic for unrecognized file types). 
+one of image, audio, video, or file(a generic for unrecognized file types).
 If unspecified, will select all asset types. Supports a comma-delimited list.
 
 =item * file_ext
@@ -114,28 +114,30 @@ sub _hdlr_assets {
     my $class_type = $args->{class_type} || 'asset';
     my $class = MT->model($class_type);
     my $assets;
+    my $no_resort = 0;
     my $tag = lc $ctx->stash('tag');
     if ( $tag eq 'entryassets' || $tag eq 'pageassets' ) {
         my $e = $ctx->stash('entry')
             or return $ctx->_no_entry_error();
 
-        if ( $e->has_summary('all_assets') ) {
-            @$assets = $e->get_summary_objs( 'all_assets' => 'MT::Asset' );
-        }
-        else {
-            require MT::ObjectAsset;
-            @$assets = MT::Asset->load(
-                { class => '*' },
-                {   join => MT::ObjectAsset->join_on(
-                        undef,
-                        {   asset_id  => \'= asset_id',
-                            object_ds => 'entry',
-                            object_id => $e->id
-                        }
-                    )
-                }
-            );
-        }
+        require MT::ObjectAsset;
+        @$assets = MT::Asset->load(
+            { class => '*' },
+            {   join => MT::ObjectAsset->join_on(
+                    undef,
+                    {   asset_id  => \'= asset_id',
+                        object_ds => 'entry',
+                        object_id => $e->id
+                    },
+                    {
+                        sort      => 'order',
+                        direction => ($args->{sort_order} || '') eq 'descend' ? 'descend' : 'ascend',
+                    }
+                )
+            }
+        );
+
+        $no_resort = 1 if @$assets && !$args->{sort_by};
 
         # Call _hdlr_pass_tokens_else if there are no assets, so that MTElse
         # is properly executed if it's present.
@@ -343,7 +345,6 @@ sub _hdlr_assets {
         }
     }
 
-    my $no_resort = 0;
     require MT::Asset;
     my @assets;
     if ( !$assets ) {
@@ -419,18 +420,19 @@ sub _hdlr_assets {
     }
     else {
         my $blog = $ctx->stash('blog');
-        my $so 
+        my $so
             = lc( $args->{sort_order} )
             || ( $blog ? $blog->sort_order_posts : undef )
             || '';
         my $col = lc( $args->{sort_by} || 'created_on' );
 
         # TBD: check column being sorted; if it is numeric, use numeric sort
-        @$assets
-            = $so eq 'ascend'
-            ? sort { $a->$col() cmp $b->$col() } @$assets
-            : sort { $b->$col() cmp $a->$col() } @$assets;
-        $no_resort = 1;
+        unless ($no_resort) {
+            @$assets
+                = $so eq 'ascend'
+                ? sort { $a->$col() cmp $b->$col() } @$assets
+                : sort { $b->$col() cmp $a->$col() } @$assets;
+        }
         if (@filters) {
             my $i   = 0;
             my $j   = 0;
