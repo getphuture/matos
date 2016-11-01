@@ -1,2 +1,3 @@
 .DS_Store
 _tmp
+cgi-bin/matos-admin/mt-config.cgi

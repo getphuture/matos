@@ -1,0 +1,23 @@
+
+
+#status-field,
+#authored_on-field {
+  float: left;
+  padding: 0 0 6px 0;
+  width: 50%;
+}
+#authored_on-field {
+  float: right;
+}
+#basename-field {
+  clear: noth;
+}
+#revision-note-field {
+  clear: both;
+}
+#created-on {
+  margin: 0 0 4px 0;
+}
+#entry-publishing-widget .save-action button {
+  width: 100%;
+}
