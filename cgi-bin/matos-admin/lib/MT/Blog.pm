@@ -360,7 +360,7 @@ sub list_props {
 
                # something far in the future to force dynamic side to read it.
                 children_modified_on => '20101231120000',
-                use_revision         => 1,
+                use_revision         => 0,
             }
         );
         return $blog;

@@ -461,27 +461,12 @@ function setLicense() {
     </mtapp:statusmsg>
   </mt:unless>
 
-    <mtapp:setting
-       id="use-revision"
-       class="has-option"
-       label="<__trans phrase="Revision history">">
-      <label for="use-revision"><input type="checkbox" value="1" name="use_revision" id="use-revision"<mt:if name="use_revision"> checked="checked"</mt:if><mt:unless name="master_revision_switch"> disabled="disabled"</mt:unless> /> <__trans phrase="Enable revision history"></label>
+    <mtapp:setting>
+	   <input type="hidden" value="0" name="use_revision" id="use-revision" />
+       <input type="hidden" name="max_revisions_entry" id="max_revisions_entry" class="text num" value="1" />
+       <input type="hidden" name="max_revisions_template" id="max_revisions_template" class="text num" value="1>" />
     </mtapp:setting>
-    
-    <div id="use-revision-option" class="setting-option">
-      <mt:setvarblock name="revisions_entry_label"><mt:if name="is_blog"><__trans phrase="Number of revisions per entry/page"><mt:else><__trans phrase="Number of revisions per page"></mt:if></mt:setvarblock>
-      <mtapp:setting
-         id="max_revisions_entry"
-         label="<mt:var name="revisions_entry_label">">
-        <input type="text" name="max_revisions_entry" id="max_revisions_entry" class="text num" value="<mt:var name="max_revisions_entry" escape="html">" />
-      </mtapp:setting>
-  
-      <mtapp:setting
-         id="max_revisions_template"
-         label="<__trans phrase="Number of revisions per template">">
-        <input type="text" name="max_revisions_template" id="max_revisions_template" class="text num" value="<mt:var name="max_revisions_template" escape="html">" />
-      </mtapp:setting>
-    </div>
+
   </mtapp:settinggroup>
 
   <mt:setvarblock name="action_buttons">
