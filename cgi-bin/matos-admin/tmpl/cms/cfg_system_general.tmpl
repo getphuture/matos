@@ -114,11 +114,8 @@ function validate (f) {
     </div>
     </mt:unless>
 
-    <mtapp:setting
-       id="track-revisions"
-       label="<__trans phrase="Revision History">"
-       hint="<__trans phrase="Enable this setting to have Movable Type track revisions made by users to entries, pages and templates.">">
-      <input type="checkbox" name="track_revisions" id="track-revisions" <mt:if name="track_revisions"> checked="checked"</mt:if> /> <label for="track_revisions"><__trans phrase="Track revision history"></label>
+    <mtapp:setting id="track-revisions">
+      <input type="hidden" name="track_revisions" id="track-revisions" value="0" />
     </mtapp:setting>
 </mtapp:settinggroup>
 
