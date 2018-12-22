@@ -448,23 +448,12 @@ function setLicense() {
        help_section="include_cache">
       <input id="include_cache" type="checkbox" name="include_cache" value="1"<mt:if name="include_cache"> checked="checked"</mt:if> /> <label for="include_cache"><__trans phrase="Allow properly configured template modules to be cached to enhance publishing performance."></label>
     </mtapp:setting>
-  </mtapp:settinggroup>
 
-  <mtapp:settinggroup id="revision-history-settings">
-    <h2><__trans phrase="Revision History"></h2>
-  <mt:unless name="master_revision_switch">
-    <mtapp:statusmsg
-       id="master_revision_off"
-       class="error"
-       can_close="0">
-      <__trans phrase="Note: Revision History is currently disabled at the system level.">
-    </mtapp:statusmsg>
-  </mt:unless>
-
-    <mtapp:setting>
+    <mtapp:setting
+	    id="use_revision">
 	   <input type="hidden" value="0" name="use_revision" id="use-revision" />
        <input type="hidden" name="max_revisions_entry" id="max_revisions_entry" class="text num" value="1" />
-       <input type="hidden" name="max_revisions_template" id="max_revisions_template" class="text num" value="1>" />
+       <input type="hidden" name="max_revisions_template" id="max_revisions_template" class="text num" value="1" />
     </mtapp:setting>
 
   </mtapp:settinggroup>
